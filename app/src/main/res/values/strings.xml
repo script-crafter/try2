@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Try2</string>
+
+    <!-- Add these new strings -->
+    <string name="create_account_title">Create Account</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="button_register">Register</string>
+    <string name="login_link_text">Already have an account? Login</string>
+</resources>

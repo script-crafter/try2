@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Custom Colors for the Theme -->
+    <color name="primary_blue">#0052CC</color>
+    <color name="text_primary">#172B4D</color>
+    <color name="text_secondary">#5E6C84</color>
+    <color name="border_color">#DFE1E6</color>
+    <color name="background_light_gray">#F4F5F7</color>
+</resources>
