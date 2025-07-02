@@ -1,3 +1,5 @@
+// settings.gradle.kts
+
 pluginManagement {
     repositories {
         google {
@@ -16,6 +18,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // --- ADD THIS LINE TO INCLUDE THE JITPACK REPOSITORY ---
+        maven { url = uri("https://jitpack.io") }
     }
 }
 

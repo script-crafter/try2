@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permissions required for Google Maps and Internet access. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,9 +17,13 @@
         android:theme="@style/Theme.Try2"
         tools:targetApi="31">
 
-        <!-- This is your LAUNCHER activity. It opens first. -->
+        <!-- This meta-data tag holds your secured Google Maps API key. -->
+        <!-- If you haven't set up the API key yet, this could also cause an error.
+             See the note below. -->
+
+        <!-- SplashActivity is the LAUNCHER activity. This is correct. -->
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,10 +31,16 @@
             </intent-filter>
         </activity>
 
-        <!-- ADD THE ACTIVITIES BELOW -->
-        <activity android:name=".SignUpActivity" android:exported="false" />
-        <activity android:name=".LoginActivity" android:exported="false" />
-        <activity android:name=".RegisterActivity" android:exported="false" />
+        <!-- MainActivity is our only other activity. It hosts all the fragments. -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"/>
+
+        <!--
+        DELETE THE OLD ACTIVITY DECLARATIONS.
+        The lines for LoginActivity, SignUpActivity, and RegisterActivity
+        must be removed because they are now Fragments, not Activities.
+        -->
 
     </application>
 
