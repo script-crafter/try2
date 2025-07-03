@@ -1,117 +1,138 @@
 package com.example.dhakaparkdriver.ui.dashboard
 
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.drawerlayout.widget.DrawerLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dhakaparkdriver.R
 import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.google.android.material.navigation.NavigationView
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.google.android.material.button.MaterialButton
+import com.google.firebase.auth.FirebaseAuth
 
 class DashboardFragment : Fragment() {
 
     private val viewModel: DashboardViewModel by viewModels()
-    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var auth: FirebaseAuth
+    private lateinit var recentActivityAdapter: RecentActivityAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // No menu code here anymore. Just inflate the layout.
         return inflater.inflate(R.layout.fragment_dashboard, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        auth = FirebaseAuth.getInstance()
 
-        setupToolbarAndDrawer(view)
-        setupObservers(view)
-        setupCharts(view)
+        // Setup all our UI components
+        setupToolbar(view)
+        setupRecyclerView(view)
+        observeViewModel(view)
+        setupActionButtons(view) // <-- We added this call for our new buttons
     }
 
-    private fun setupToolbarAndDrawer(view: View) {
-        drawerLayout = view.findViewById(R.id.drawer_layout)
-        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
-        (activity as AppCompatActivity).setSupportActionBar(toolbar)
+    // This function will set up the click listeners for our 6 new buttons.
+    private fun setupActionButtons(view: View) {
+        // Find each button by its ID from the XML
+        val profileButton = view.findViewById<MaterialButton>(R.id.profile_settings_button)
+        val payoutButton = view.findViewById<MaterialButton>(R.id.payout_method_button)
+        val revenueButton = view.findViewById<MaterialButton>(R.id.revenue_button)
+        val supportButton = view.findViewById<MaterialButton>(R.id.support_button)
+        val removeParkingButton = view.findViewById<MaterialButton>(R.id.remove_parking_button)
+        val logoutButton = view.findViewById<MaterialButton>(R.id.logout_button)
 
-        val toggle = ActionBarDrawerToggle(
-            activity, drawerLayout, toolbar,
-            R.string.navigation_drawer_open, R.string.navigation_drawer_close
-        )
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
+        // Set an OnClickListener for each button
+        profileButton.setOnClickListener {
+            // TODO: Replace with your actual navigation action ID
+            findNavController().navigate(R.id.action_dashboardFragment_to_profileSettingsFragment)
+        }
 
-        val navView = view.findViewById<NavigationView>(R.id.nav_view)
-        navView.setNavigationItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.nav_logout -> {
-                    Firebase.auth.signOut()
-                    findNavController().navigate(R.id.action_dashboardFragment_to_loginFragment)
-                }
-                // Handle other navigation items...
-            }
-            drawerLayout.closeDrawers()
-            true
+        payoutButton.setOnClickListener {
+            // TODO: Replace with your actual navigation action ID
+            // findNavController().navigate(R.id.action_dashboardFragment_to_payoutMethodFragment)
+        }
+
+        revenueButton.setOnClickListener {
+            // TODO: Replace with your actual navigation action ID
+            // findNavController().navigate(R.id.action_dashboardFragment_to_revenueFragment)
+        }
+
+        supportButton.setOnClickListener {
+            // TODO: Replace with your actual navigation action ID
+            // findNavController().navigate(R.id.action_dashboardFragment_to_supportFragment)
+        }
+
+        removeParkingButton.setOnClickListener {
+            // TODO: Replace with your actual navigation action ID
+            // findNavController().navigate(R.id.action_dashboardFragment_to_removeParkingFragment)
+        }
+
+        logoutButton.setOnClickListener {
+            auth.signOut()
+            findNavController().navigate(R.id.action_dashboardFragment_to_userRoleSelectionFragment)
         }
     }
 
-    private fun setupObservers(view: View) {
+    private fun setupToolbar(view: View) {
+        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
+        val navController = findNavController()
+        // This makes sure the back arrow doesn't show on the dashboard
+        val appBarConfiguration = AppBarConfiguration(setOf(R.id.dashboardFragment))
+        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration)
+    }
+
+    private fun setupRecyclerView(view: View) {
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recent_activity_recycler_view)
+        recentActivityAdapter = RecentActivityAdapter(emptyList())
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = recentActivityAdapter
+    }
+
+    private fun observeViewModel(view: View) {
         val welcomeTextView = view.findViewById<TextView>(R.id.welcome_text)
-        val statusTextView = view.findViewById<TextView>(R.id.status_text)
-        val kpiTitle1 = view.findViewById<TextView>(R.id.kpi_title_1)
-        val kpiValue1 = view.findViewById<TextView>(R.id.kpi_value_1)
-        val kpiTitle2 = view.findViewById<TextView>(R.id.kpi_title_2)
-        val kpiValue2 = view.findViewById<TextView>(R.id.kpi_value_2)
+        val kycStatusTextView = view.findViewById<TextView>(R.id.kyc_status_text)
+        // ... (rest of your observer code is unchanged)
+        val earningsValueTextView = view.findViewById<TextView>(R.id.earnings_value)
+        val occupancyValueTextView = view.findViewById<TextView>(R.id.occupancy_value)
+        val chart = view.findViewById<LineChart>(R.id.earnings_chart)
 
         viewModel.ownerName.observe(viewLifecycleOwner) { name ->
             welcomeTextView.text = "Welcome, $name!"
         }
-        viewModel.approvalStatus.observe(viewLifecycleOwner) { status ->
-            statusTextView.text = "Status: $status"
-        }
-        viewModel.kpiCards.observe(viewLifecycleOwner) { cards ->
-            if (cards.size >= 2) {
-                kpiTitle1.text = cards[0].title
-                kpiValue1.text = cards[0].value
-                kpiTitle2.text = cards[1].title
-                kpiValue2.text = cards[1].value
-                // Update other cards...
-            }
-        }
-        viewModel.recentActivity.observe(viewLifecycleOwner) { activities ->
-            val recyclerView = view.findViewById<RecyclerView>(R.id.recent_activity_recycler_view)
-            recyclerView.layoutManager = LinearLayoutManager(context)
-            recyclerView.adapter = RecentActivityAdapter(activities)
-        }
-    }
 
-    private fun setupCharts(view: View) {
-        val earningsChart = view.findViewById<LineChart>(R.id.earnings_chart)
-        // TODO: Replace with real data from ViewModel
-        val entries = ArrayList<Entry>()
-        entries.add(Entry(0f, 4f))
-        entries.add(Entry(1f, 8f))
-        entries.add(Entry(2f, 6f))
-        entries.add(Entry(3f, 11f))
-        entries.add(Entry(4f, 7f))
+        viewModel.kycStatus.observe(viewLifecycleOwner) { status ->
+            kycStatusTextView.text = status.displayText
+            val background = kycStatusTextView.background as GradientDrawable
+            background.setColor(ContextCompat.getColor(requireContext(), status.colorRes))
+        }
 
-        val dataSet = LineDataSet(entries, "Weekly Earnings")
-        val lineData = LineData(dataSet)
-        earningsChart.data = lineData
-        earningsChart.invalidate() // refresh
+        viewModel.todaysEarnings.observe(viewLifecycleOwner) { earnings ->
+            earningsValueTextView.text = String.format("$%.2f", earnings)
+        }
+
+        viewModel.occupancyRate.observe(viewLifecycleOwner) { rate ->
+            occupancyValueTextView.text = "$rate%"
+        }
+
+        viewModel.recentActivities.observe(viewLifecycleOwner) { activities ->
+            recentActivityAdapter.updateData(activities)
+        }
+
+        chart.description.isEnabled = false
+        chart.legend.isEnabled = false
     }
 }

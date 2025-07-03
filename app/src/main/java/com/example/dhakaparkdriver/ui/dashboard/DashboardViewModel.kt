@@ -3,58 +3,91 @@ package com.example.dhakaparkdriver.ui.dashboard
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.dhakaparkdriver.data.KpiCard
-import com.example.dhakaparkdriver.data.RecentActivity
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+// Data class to represent a single activity item
+data class ActivityItem(
+    val type: String,
+    val text: String,
+    val timestamp: Date
+)
+
+// Enum for KYC status to make code cleaner and safer
+enum class KycStatus(val displayText: String, val colorRes: Int) {
+    PENDING("Pending", android.R.color.darker_gray),
+    VERIFIED("Verified", android.R.color.holo_green_dark),
+    REJECTED("Rejected", android.R.color.holo_red_dark),
+    UNKNOWN("Unknown", android.R.color.black)
+}
 
 class DashboardViewModel : ViewModel() {
 
-    // LiveData for the welcome banner
+    private val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+
     private val _ownerName = MutableLiveData<String>()
     val ownerName: LiveData<String> = _ownerName
 
-    private val _approvalStatus = MutableLiveData<String>()
-    val approvalStatus: LiveData<String> = _approvalStatus
+    private val _kycStatus = MutableLiveData<KycStatus>()
+    val kycStatus: LiveData<KycStatus> = _kycStatus
 
-    // LiveData for KPI cards
-    private val _kpiCards = MutableLiveData<List<KpiCard>>()
-    val kpiCards: LiveData<List<KpiCard>> = _kpiCards
+    private val _todaysEarnings = MutableLiveData<Double>()
+    val todaysEarnings: LiveData<Double> = _todaysEarnings
 
-    // LiveData for Recent Activity
-    private val _recentActivity = MutableLiveData<List<RecentActivity>>()
-    val recentActivity: LiveData<List<RecentActivity>> = _recentActivity
+    private val _occupancyRate = MutableLiveData<Int>()
+    val occupancyRate: LiveData<Int> = _occupancyRate
 
+    private val _recentActivities = MutableLiveData<List<ActivityItem>>()
+    val recentActivities: LiveData<List<ActivityItem>> = _recentActivities
+
+    // Add LiveData for chart data later if needed, for now we can fetch directly
 
     init {
-        loadDashboardData()
+        fetchDashboardData()
     }
 
-    private fun loadDashboardData() {
-        val user = Firebase.auth.currentUser
+    private fun fetchDashboardData() {
+        val userId = auth.currentUser?.uid ?: return
 
-        // --- Mock Data Population ---
-        // TODO: Replace this with real data fetches from Firestore
+        // Fetch User Info (Name, KYC)
+        db.collection("owners").document(userId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null || snapshot == null) return@addSnapshotListener
 
-        // Welcome Banner Data
-        _ownerName.value = user?.displayName ?: "Owner" // Or fetch from your "owners" collection
-        _approvalStatus.value = "Pending Approval"
+                _ownerName.value = snapshot.getString("name") ?: "Owner"
+                val statusString = snapshot.getString("kycStatus") ?: "UNKNOWN"
+                _kycStatus.value = KycStatus.valueOf(statusString.uppercase())
+            }
 
-        // KPI Cards Data
-        _kpiCards.value = listOf(
-            KpiCard("Today's Earnings", "$150.00"),
-            KpiCard("Occupancy Rate", "75%"),
-            KpiCard("Pending Bookings", "3"),
-            KpiCard("Monthly Earnings", "$3,250.00")
-        )
+        // Fetch Today's Metrics (Earnings, Occupancy)
+        val todayDate = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+        db.collection("owners").document(userId).collection("dailyMetrics").document(todayDate)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null || snapshot == null) {
+                    _todaysEarnings.value = 0.0
+                    _occupancyRate.value = 0
+                    return@addSnapshotListener
+                }
+                _todaysEarnings.value = snapshot.getDouble("earnings") ?: 0.0
+                _occupancyRate.value = snapshot.getLong("occupancyRate")?.toInt() ?: 0
+            }
 
-        // Recent Activity Data
-        _recentActivity.value = listOf(
-            RecentActivity("Booking confirmed for Spot #3", "10:45 AM"),
-            RecentActivity("Document 'lease_agreement.pdf' uploaded", "9:12 AM"),
-            RecentActivity("Profile details updated", "Yesterday"),
-            RecentActivity("Payout of $450 processed", "2 days ago"),
-            RecentActivity("New review received: 4 stars", "2 days ago")
-        )
+        // Fetch Recent Activities
+        db.collection("owners").document(userId).collection("recentActivities")
+            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .limit(10)
+            .addSnapshotListener { snapshots, error ->
+                if (error != null || snapshots == null) return@addSnapshotListener
+
+                val activities = snapshots.mapNotNull { doc ->
+                    doc.toObject(ActivityItem::class.java)
+                }
+                _recentActivities.value = activities
+            }
     }
 }

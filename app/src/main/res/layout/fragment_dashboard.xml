@@ -1,146 +1,216 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.dashboard.DashboardFragment"
-    tools:openDrawer="start">
+    tools:context=".ui.dashboard.DashboardFragment">
 
-    <!-- Main Content -->
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.appbar.AppBarLayout
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="?attr/actionBarSize"
+            app:title="Dashboard" />
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Welcome Card -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:title="Dashboard"
-                app:titleTextColor="@android:color/white"/>
-        </com.google.android.material.appbar.AppBarLayout>
+                android:layout_height="wrap_content"
+                app:cardElevation="4dp">
 
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/welcome_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Welcome, John!" />
+
+                    <TextView
+                        android:id="@+id/kyc_status_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/badge_background"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="4dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/welcome_text"
+                        tools:text="Verified" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Earnings and Occupancy Cards -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/earnings_card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Today's Earnings" android:textAppearance="?attr/textAppearanceBody2"/>
+                        <TextView android:id="@+id/earnings_value" android:layout_width="wrap_content" android:layout_height="wrap_content" tools:text="$150.75" android:textAppearance="?attr/textAppearanceHeadline5"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/occupancy_card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Occupancy" android:textAppearance="?attr/textAppearanceBody2"/>
+                        <TextView android:id="@+id/occupancy_value" android:layout_width="wrap_content" android:layout_height="wrap_content" tools:text="85%" android:textAppearance="?attr/textAppearanceHeadline5"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+            <!-- ADD THIS ENTIRE SECTION TO YOUR XML -->
+
+            <!-- Actions & Settings Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Actions & Settings"
+                android:textAppearance="?attr/textAppearanceTitleMedium" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_marginTop="8dp">
 
-                <!-- Welcome Banner -->
-                <com.google.android.material.card.MaterialCardView
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/profile_settings_button"
+                    style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardElevation="4dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-                        <TextView
-                            android:id="@+id/welcome_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            tools:text="Welcome, Owner Name!"/>
-                        <TextView
-                            android:id="@+id/status_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:textStyle="italic"
-                            tools:text="Status: Pending Approval"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                    android:text="Profile & Settings"
+                    app:icon="@drawable/ic_profile" /> <!-- Optional: Add an icon -->
 
-                <!-- KPI Cards -->
-                <GridLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:columnCount="2"
-                    android:rowCount="2">
-                    <!-- Cards will be added programmatically or you can define them here -->
-                    <!-- Example of one card -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_columnWeight="1"
-                        android:layout_margin="4dp" >
-                        <LinearLayout android:orientation="vertical" android:padding="12dp" android:layout_width="match_parent" android:layout_height="wrap_content">
-                            <TextView android:id="@+id/kpi_title_1" tools:text="Today's Earnings" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                            <TextView android:id="@+id/kpi_value_1" tools:text="$150.00" android:textSize="22sp" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_columnWeight="1"
-                        android:layout_margin="4dp" >
-                        <LinearLayout android:orientation="vertical" android:padding="12dp" android:layout_width="match_parent" android:layout_height="wrap_content">
-                            <TextView android:id="@+id/kpi_title_2" tools:text="Occupancy" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                            <TextView android:id="@+id/kpi_value_2" tools:text="75%" android:textSize="22sp" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                    <!-- Add other two cards similarly -->
-                </GridLayout>
-
-
-                <!-- Quick Actions -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
-                    <Button style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:text="Add Location" android:layout_weight="1" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginEnd="8dp"/>
-                    <Button style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:text="View Bookings" android:layout_weight="1" android:layout_width="0dp" android:layout_height="wrap_content"/>
-                </LinearLayout>
-
-                <!-- Earnings Chart -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Weekly Earnings Trend"
-                    android:textAppearance="?attr/textAppearanceTitleMedium" />
-                <com.github.mikephil.charting.charts.LineChart
-                    android:id="@+id/earnings_chart"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginTop="8dp"/>
-
-                <!-- Recent Activity -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Recent Activity"
-                    android:textAppearance="?attr/textAppearanceTitleMedium" />
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recent_activity_recycler_view"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/payout_method_button"
+                    style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    tools:listitem="@layout/item_recent_activity"
-                    tools:itemCount="5"/>
+                    android:text="Payout Method"
+                    app:icon="@drawable/ic_payment" /> <!-- Optional: Add an icon -->
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/revenue_button"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Revenue / Payments"
+                    app:icon="@drawable/ic_revenue" /> <!-- Optional: Add an icon -->
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/support_button"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Support / FAQ"
+                    app:icon="@drawable/ic_support" /> <!-- Optional: Add an icon -->
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/remove_parking_button"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Remove Parking"
+                    app:icon="@drawable/ic_delete" /> <!-- Optional: Add an icon -->
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/logout_button"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Logout"
+                    app:icon="@drawable/ic_logout" /> <!-- Optional: Add an icon -->
+
             </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <!-- Quick Action Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+                <Button android:id="@+id/add_location_button" style="@style/Widget.Material3.Button.ElevatedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Add Location" android:layout_marginEnd="8dp"/>
+                <Button android:id="@+id/view_bookings_button" style="@style/Widget.Material3.Button.ElevatedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="View Bookings" android:layout_marginStart="8dp"/>
+            </LinearLayout>
 
-    <!-- Navigation Drawer -->
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/nav_header"
-        app:menu="@menu/drawer_menu" />
+            <!-- Earnings Trend Chart -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Last 7 Days Earnings" android:textAppearance="?attr/textAppearanceTitleMedium"/>
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/earnings_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-</androidx.drawerlayout.widget.DrawerLayout>
+            <!-- Recent Activity Feed -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Recent Activity"
+                android:textAppearance="?attr/textAppearanceTitleMedium" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recent_activity_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_recent_activity"
+                tools:itemCount="5"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

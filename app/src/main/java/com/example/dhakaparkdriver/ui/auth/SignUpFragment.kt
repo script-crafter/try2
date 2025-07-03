@@ -96,7 +96,7 @@ class SignUpFragment : Fragment() {
         }
 
         view.findViewById<TextView>(R.id.loginLink).setOnClickListener {
-            findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
+            findNavController().popBackStack()
         }
 
         view.findViewById<Button>(R.id.uploadDocumentButton).setOnClickListener {

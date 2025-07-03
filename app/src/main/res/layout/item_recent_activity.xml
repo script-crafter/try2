@@ -1,20 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:paddingVertical="8dp">
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="12dp">
 
-    <TextView
-        android:id="@+id/activity_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="Booking confirmed for Spot #3"/>
+    <ImageView
+        android:id="@+id/activity_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
+        tools:src="@drawable/ic_arrow_back" /> <!-- Placeholder icon -->
 
-    <TextView
-        android:id="@+id/activity_timestamp"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="12sp"
-        tools:text="10:45 AM"/>
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/activity_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="New booking for 2 hours at Downtown Garage."
+            android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+        <TextView
+            android:id="@+id/activity_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="2 hours ago"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?android:attr/textColorSecondary" />
+    </LinearLayout>
 </LinearLayout>

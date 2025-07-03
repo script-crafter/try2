@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore) // Use the alias if available
     implementation("com.google.firebase:firebase-storage-ktx") // Assuming this isn't in libs.versions.toml yet
+    implementation("com.google.android.material:material:1.11.0") // Use the latest version
 
     // AndroidX & UI Libraries
     implementation(libs.androidx.core.ktx)

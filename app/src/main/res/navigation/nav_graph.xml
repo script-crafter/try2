@@ -4,12 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
+    app:startDestination="@id/userRoleSelectionFragment">
 
-    <!-- Login screen is the starting point of this graph -->
+    <!-- Auth & Splash Flow (Unchanged) -->
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.example.dhakaparkdriver.ui.SplashFragment"
+        android:label="Welcome"
+        <action
+            android:id="@+id/action_splashFragment_to_userRoleSelectionFragment"
+            app:destination="@id/userRoleSelectionFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/userRoleSelectionFragment"
+        android:name="com.example.dhakaparkdriver.ui.UserRoleSelectionFragment"
+        android:label="Select Your Role"
+        tools:layout="@layout/fragment_user_role_selection">
+        <action
+            android:id="@+id/action_userRoleSelectionFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.dhakaparkdriver.ui.auth.LoginFragment"
-        android:label="fragment_login"
+        android:label="Login"
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
@@ -17,39 +44,87 @@
         <action
             android:id="@+id/action_loginFragment_to_dashboardFragment"
             app:destination="@id/dashboardFragment"
-            app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
-
-    <!-- Sign-Up screen -->
-    <fragment
-        android:id="@+id/signUpFragment"
-        android:name="com.example.dhakaparkdriver.ui.auth.SignUpFragment"
-        android:label="fragment_sign_up"
-        tools:layout="@layout/fragment_sign_up" >
-        <action
-            android:id="@+id/action_signUpFragment_to_loginFragment"
-            app:destination="@id/loginFragment"
-            app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_signUpFragment_to_dashboardFragment"
-            app:destination="@id/dashboardFragment"
-            app:popUpTo="@id/signUpFragment"
-            app:popUpToInclusive="true"/>
-    </fragment>
-
-    <!-- Dashboard screen -->
-    <fragment
-        android:id="@+id/dashboardFragment"
-        android:name="com.example.dhakaparkdriver.ui.dashboard.DashboardFragment"
-        android:label="fragment_dashboard"
-        tools:layout="@layout/fragment_dashboard" >
-        <action
-            android:id="@+id/action_dashboardFragment_to_loginFragment"
-            app:destination="@id/loginFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
+
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.example.dhakaparkdriver.ui.auth.SignUpFragment"
+        android:label="Sign Up"
+        tools:layout="@layout/fragment_sign_up" >
+        <action
+            android:id="@+id/action_signUpFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"/>
+    </fragment>
+
+    <!-- Dashboard Screen (NOW WITH ALL ACTIONS) -->
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.example.dhakaparkdriver.ui.dashboard.DashboardFragment"
+        android:label="Dashboard"
+        tools:layout="@layout/fragment_dashboard" >
+        <!-- Action for Logout (existing) -->
+        <action
+            android:id="@+id/action_dashboardFragment_to_userRoleSelectionFragment"
+            app:destination="@id/userRoleSelectionFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+
+        <!-- ADDED: Actions for the new buttons -->
+        <action
+            android:id="@+id/action_dashboardFragment_to_profileSettingsFragment"
+            app:destination="@id/profileSettingsFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_payoutMethodFragment"
+            app:destination="@id/payoutMethodFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_revenueFragment"
+            app:destination="@id/revenueFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_supportFragment"
+            app:destination="@id/supportFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_removeParkingFragment"
+            app:destination="@id/removeParkingFragment" />
+    </fragment>
+
+
+    <!-- =============================================================== -->
+    <!-- ADDED: The 5 new fragment destinations for your buttons         -->
+    <!-- You will need to create the Kotlin/XML files for these.         -->
+    <!-- =============================================================== -->
+
+    <fragment
+        android:id="@+id/profileSettingsFragment"
+        android:name="com.example.dhakaparkdriver.ui.settings.ProfileSettingsFragment"
+        android:label="Profile & Settings"
+        tools:layout="@layout/fragment_profile_settings" />
+
+    <fragment
+        android:id="@+id/payoutMethodFragment"
+        android:name="com.example.dhakaparkdriver.ui.payout.PayoutMethodFragment"
+        android:label="Payout Method"
+        tools:layout="@layout/fragment_payout_method" />
+
+    <fragment
+        android:id="@+id/revenueFragment"
+        android:name="com.example.dhakaparkdriver.ui.revenue.RevenueFragment"
+        android:label="Revenue"
+        tools:layout="@layout/fragment_revenue" />
+
+    <fragment
+        android:id="@+id/supportFragment"
+        android:name="com.example.dhakaparkdriver.ui.support.SupportFragment"
+        android:label="Support"
+        tools:layout="@layout/fragment_support" />
+
+    <fragment
+        android:id="@+id/removeParkingFragment"
+        android:name="com.example.dhakaparkdriver.ui.parking.RemoveParkingFragment"
+        android:label="Remove Parking"
+        tools:layout="@layout/fragment_remove_parking" />
 
 </navigation>
